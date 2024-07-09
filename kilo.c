@@ -8,7 +8,7 @@
 #define CTRL_KEY(k) ((k) & 0x1f) // bitwise ANDs with 00011111 a.k.a. strips the left 3 bits
 // 'q': 113=01110001 ==> 00010001=17
 
-struct termios original_termios;
+struct termios original_termios; // variable to save original terminal settings
 
 void die(const char * s) {
     perror(s);
@@ -37,18 +37,34 @@ void enableRawMode() {
         die("tcsetattr");
 }
 
+char editorReadKey() {
+    char c;
+    int nread;
+    // repeats loop while read() times out
+    while ((nread = read(STDIN_FILENO, &c, 1)) != 1) {
+        if (nread == -1 && errno != EAGAIN) {
+            die("read");
+        }
+    }
+    return c;
+}
+
+void editorProcessKeypress() {
+    char c = editorReadKey();
+    switch (c) {
+        case CTRL_KEY('q'):
+            exit(0);
+            break;
+        case 'A':
+            printf("%d ('%c')\r\n", c, c);
+            break;
+    }
+}
+
 int main() {
     enableRawMode();
     while (1) {
-        char c = '\0';
-        if (read(STDIN_FILENO, &c, 1) == -1 && errno != EAGAIN) // when read() times out, EAGAIN is thrown
-            die("read");
-        if (iscntrl(c)) {
-            printf("%d\r\n", c);
-        } else {
-            printf("%d ('%c')\r\n", c, c);
-        }
-        if (c == CTRL_KEY('q')) break;
+        editorProcessKeypress();
     }
     return 0;
 }
