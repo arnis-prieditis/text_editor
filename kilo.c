@@ -5,6 +5,9 @@
 #include <termios.h>
 #include <errno.h>
 
+#define CTRL_KEY(k) ((k) & 0x1f) // bitwise ANDs with 00011111 a.k.a. strips the left 3 bits
+// 'q': 113=01110001 ==> 00010001=17
+
 struct termios original_termios;
 
 void die(const char * s) {
@@ -45,7 +48,7 @@ int main() {
         } else {
             printf("%d ('%c')\r\n", c, c);
         }
-        if (c == 'q') break;
+        if (c == CTRL_KEY('q')) break;
     }
     return 0;
 }
