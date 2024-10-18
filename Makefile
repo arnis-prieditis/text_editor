@@ -1,7 +1,7 @@
-all: test kilo
-
-test: test.c
-	$(CC) test.c -o test -Wall -Wextra -pedantic -std=c99
+CARGS= -Wall -Wextra -pedantic -std=c99
+all: kilo
 
 kilo: kilo.c
-	$(CC) kilo.c -o kilo -Wall -Wextra -pedantic -std=c99
+	$(CC) kilo.c -o kilo $(CARGS)
+clean:
+	$(RM) kilo
