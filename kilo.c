@@ -51,6 +51,16 @@ char editorReadKey() {
     return c;
 }
 
+/*** output ***/
+
+void editorRefreshScreen() {
+    // we are writing 4 bytes to the terminal
+    // \x1b means escape; eacape sequence always starts with \0x1b[
+    // 2 is the argument (means clear entire screen), J is the command (erase in display)
+    // we will be using VT100 esc sequences
+    write(STDOUT_FILENO, "\x1b[2J", 4);
+}
+
 /*** input ***/
 void editorProcessKeypress() {
     char c = editorReadKey();
@@ -68,6 +78,7 @@ void editorProcessKeypress() {
 int main() {
     enableRawMode();
     while (1) {
+        editorRefreshScreen();
         editorProcessKeypress();
     }
     return 0;
