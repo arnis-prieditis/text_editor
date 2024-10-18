@@ -11,6 +11,12 @@
 /*** data ***/
 struct termios original_termios; // variable to save original terminal settings
 
+struct editorConfig {
+    struct original_termios;
+}
+
+struct editorConfig E;
+
 /*** terminal ***/
 void die(const char * s) {
     write(STDOUT_FILENO, "\x1b[2J", 4);
@@ -20,15 +26,15 @@ void die(const char * s) {
 }
 
 void disableRawMode() {
-    if (tcsetattr(STDIN_FILENO, TCSAFLUSH, &original_termios) == -1)
+    if (tcsetattr(STDIN_FILENO, TCSAFLUSH, &E.original_termios) == -1)
         die("tcsetattr");
 }
 
 void enableRawMode() {
-    if (tcgetattr(STDIN_FILENO, &original_termios) == -1)
+    if (tcgetattr(STDIN_FILENO, &E.original_termios) == -1)
         die("tcgetattr");
     atexit(disableRawMode);
-    struct termios raw = original_termios;
+    struct termios raw = E.original_termios;
     // some flags to modify the behaviour of the terminal
     // https://www.man7.org/linux/man-pages/man3/termios.3.html for more info
     raw.c_iflag &= ~(IXON | ICRNL | INPCK | ISTRIP | BRKINT);
