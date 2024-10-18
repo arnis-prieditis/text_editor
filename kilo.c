@@ -70,6 +70,7 @@ void editorRefreshScreen() {
     write(STDOUT_FILENO, "\x1b[2J", 4);
     write(STDOUT_FILENO, "\x1b[H", 3); //reposition cursor at 1 1 (same as \x1b[1;1H)
 
+    write(STDOUT_FILENO, "Press ctrl-Q to exit\r\n", 22);
     editorDrawRows();
     write(STDOUT_FILENO, "\x1b[H", 3); //reposition cursor after drawing rows
 }
