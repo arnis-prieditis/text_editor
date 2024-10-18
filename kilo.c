@@ -55,6 +55,13 @@ char editorReadKey() {
 
 /*** output ***/
 
+void editorDrawRows() {
+    // just draw 10 rows as we do not know the size of the terminal yet
+    for (int y=0; y < 10; y++) {
+        write(STDOUT_FILENO, "~\r\n", 3);
+    }
+}
+
 void editorRefreshScreen() {
     // we are writing 4 bytes to the terminal
     // \x1b means escape; eacape sequence always starts with \0x1b[
@@ -62,6 +69,9 @@ void editorRefreshScreen() {
     // we will be using VT100 esc sequences
     write(STDOUT_FILENO, "\x1b[2J", 4);
     write(STDOUT_FILENO, "\x1b[H", 3); //reposition cursor at 1 1 (same as \x1b[1;1H)
+
+    editorDrawRows();
+    write(STDOUT_FILENO, "\x1b[H", 3); //reposition cursor after drawing rows
 }
 
 /*** input ***/
