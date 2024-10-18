@@ -13,6 +13,8 @@ struct termios original_termios; // variable to save original terminal settings
 
 /*** terminal ***/
 void die(const char * s) {
+    write(STDOUT_FILENO, "\x1b[2J", 4);
+    write(STDOUT_FILENO, "\x1b[H", 3);
     perror(s);
     exit(1);
 }
@@ -59,6 +61,7 @@ void editorRefreshScreen() {
     // 2 is the argument (means clear entire screen), J is the command (erase in display)
     // we will be using VT100 esc sequences
     write(STDOUT_FILENO, "\x1b[2J", 4);
+    write(STDOUT_FILENO, "\x1b[H", 3); //reposition cursor at 1 1 (same as \x1b[1;1H)
 }
 
 /*** input ***/
@@ -66,6 +69,8 @@ void editorProcessKeypress() {
     char c = editorReadKey();
     switch (c) {
         case CTRL_KEY('q'):
+            write(STDOUT_FILENO, "\x1b[2J", 4);
+            write(STDOUT_FILENO, "\x1b[H", 3);
             exit(0);
             break;
         case 'A':
