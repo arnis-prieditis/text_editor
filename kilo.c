@@ -8,8 +8,10 @@
 #define CTRL_KEY(k) ((k) & 0x1f) // bitwise ANDs with 00011111 a.k.a. strips the left 3 bits
 // 'q': 113=01110001 ==> 00010001=17
 
+/*** data ***/
 struct termios original_termios; // variable to save original terminal settings
 
+/*** terminal ***/
 void die(const char * s) {
     perror(s);
     exit(1);
@@ -49,6 +51,7 @@ char editorReadKey() {
     return c;
 }
 
+/*** input ***/
 void editorProcessKeypress() {
     char c = editorReadKey();
     switch (c) {
@@ -61,6 +64,7 @@ void editorProcessKeypress() {
     }
 }
 
+/*** init ***/
 int main() {
     enableRawMode();
     while (1) {
